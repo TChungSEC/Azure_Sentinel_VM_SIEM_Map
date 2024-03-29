@@ -1,4 +1,4 @@
-<h1>Azure Sentinel VM Honeypot SIEM Map Lab</h1>
+![image](https://github.com/TChungSEC/Azure_Sentinel_VM_SIEM_Map/assets/164605938/50615654-2251-4076-85c9-e2198eac115d)<h1>Azure Sentinel VM Honeypot SIEM Map Lab</h1>
 
  
 <h2>Description</h2>
@@ -8,6 +8,7 @@ In this lab we will create a VM in MS Azure, and log traffic trying to bruteforc
 <h2>Environment used:</h2>
 
 - <b>MS Azure</b>
+- <b>Windows 10</b>
 
 <h2>Pre-requsites:</h2>
 Note that you must have an MS Azure account to complete this lab. You can sign up for free and claim $200 worth of free credits here:
@@ -181,9 +182,93 @@ Under the "Domain", "Private", and "Public" tabs turn off the firewall.
 ![24 go to all tabs and turn firewall OFF](https://github.com/TChungSEC/Azure_Sentinel_VM_SIEM_Map/assets/164605938/64230fdc-a6ea-4756-a5df-e6e3e098aa88)
 
 
-<h2>Download powershell script/h2>  <br/>
+<h2>Download powershell script</h2>  <br/>
 
-Now, still in our VM, open your internet browser and navigate to: https://github.com/joshmadakor1/Sentinel-Lab/blob/main/Custom_Security_Log_Exporter.ps1
+We need to be running a powershell script on our VM to actually log the geodata of the threat actors attempting to log into our VM.
+
+What this script does essentially is it looks through our event logs, and notes the failed login attempts and their IPs. In conjunction with and API key from IPgeolocation.io, it maps the IP to a phsyical location.
+
+Now, still in our VM, open your internet browser and navigate to: 
+
+https://github.com/joshmadakor1/Sentinel-Lab/blob/main/Custom_Security_Log_Exporter.ps1
+
+Select all and copy the script, and then open Powershell ISE by searching in the Start Menu for "Powershell" and selecting Powershell ISE.
+
+In Powershell ISE, select new script
+
+![26 new script](https://github.com/TChungSEC/Azure_Sentinel_VM_SIEM_Map/assets/164605938/a8bc2289-a43e-4578-a562-4cc08927c217)
+
+And paste in the script you copied. 
+
+You'll notice at the beginning of the script there is a section for an API key. In order for this script to work, you'll need an API key from Ipgeolocation.io
+
+You can sign up for free and get 1000 API requests daily. So do that, and in your dashboard you'll be provided an API key.
+
+![29 API key](https://github.com/TChungSEC/Azure_Sentinel_VM_SIEM_Map/assets/164605938/ee27bdfb-1cf3-482f-be36-47a614272eff)
+
+Copy and paste the API key into your script.
+
+Now, save your Powershell script to the desktop and name it whatever you'd like. In my case I named it "logexporter".
+
+![31 save file](https://github.com/TChungSEC/Azure_Sentinel_VM_SIEM_Map/assets/164605938/56d7a723-9653-462f-b7f9-2586900d61a8)
+
+
+<h2>Create a custom log in Log Analytics Workspace</h2>  <br/>
+
+The script is good to go, but we need to "train" analytics workspace to identify the data and process it. We will create a custom log inside of our Log Analytics Workspace that will allow us to bring the geodata into our workspace.
+
+Back in Azure, search for "Log Analytics Workspace" and navigate to it. Select our workspace on the page. On the lefthand side select "Custom Logs", and then "Add custom log".
+
+![34 select log file](https://github.com/TChungSEC/Azure_Sentinel_VM_SIEM_Map/assets/164605938/fcb2ba58-199c-4eb2-a0f7-191517d743a0)
+
+Here it's asking for a sample log, but it's on our VM.
+
+In our VM, at the destination C:/ProgramData, we should have a file called "failed_rdp.log"
+
+Open this file in notepad, and copy the contents of it. 
+
+![30 example log training](https://github.com/TChungSEC/Azure_Sentinel_VM_SIEM_Map/assets/164605938/7bcf1d12-ed53-4021-81a6-07ae434caad4)
+
+*NOTE* Mine is super long because I've been running the script a while. You will only have a few sample entries. This is fine. Copy them.
+
+Now on your Windows machine, create a new .log file called failed_rdp and paste the contents you copied from your VM into it. Save it anywhere. This is our sample we're using the train the log analytics what to look for in the log file.
+
+Now point the sample log to where you saved "failed_rdp.log" on your Windows machine and select "Next".
+
+![34 rdp log](https://github.com/TChungSEC/Azure_Sentinel_VM_SIEM_Map/assets/164605938/b306666e-3e4c-4e12-921d-af1e2386bcdd)
+
+Here we'll see an example of what it looks like. If it look good, select "Next".
+
+![35 next](https://github.com/TChungSEC/Azure_Sentinel_VM_SIEM_Map/assets/164605938/71b5f8f9-2ab5-4252-b6e1-a25f08f312b7)
+
+Now in the collection path tab, we need to select where log resides in the VM. If you recall it should be C:/ProgramData/failed_rdp.log. 
+
+![36 log location VM](https://github.com/TChungSEC/Azure_Sentinel_VM_SIEM_Map/assets/164605938/81ed1058-35d5-410f-a445-696efd2b41ac)
+
+Under "Details" you can name the custom log whatever you'd like. Select "Next", then "Create" at the bottom. It might take a moment for the Log Analytics Workspace and Sentinel to "sync". Just wait.
+
+<h2>Create a new workbook in Sentinel</h2>  <br/>
+
+We are now at the final step. Congratulations for making it this far! 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
