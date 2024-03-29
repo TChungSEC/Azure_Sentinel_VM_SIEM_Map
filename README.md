@@ -1,4 +1,4 @@
-![image](https://github.com/TChungSEC/Azure_Sentinel_VM_SIEM_Map/assets/164605938/50615654-2251-4076-85c9-e2198eac115d)<h1>Azure Sentinel VM Honeypot SIEM Map Lab</h1>
+<h1>Azure Sentinel VM Honeypot SIEM Map Lab</h1>
 
  
 <h2>Description</h2>
