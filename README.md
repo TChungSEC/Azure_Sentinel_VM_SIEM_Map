@@ -14,8 +14,6 @@ Note that you must have an MS Azure account to complete this lab. You can sign u
 
 https://azure.microsoft.com/en-us/pricing/offers/ms-azr-0044p
 
-<h2>Walk-through:</h2>
-
 <p align="center">
 <br />
 <br />
@@ -69,9 +67,153 @@ It should look similar to this.
 
 Select Create and then our virtual machine should start deploying. (Note this may take 10-15 minutes).
 
+![5 Deployment in progress](https://github.com/TChungSEC/Azure_Sentinel_VM_SIEM_Map/assets/164605938/88f58569-854e-463f-9525-d2244f19c7f1)
+
 While waiting for the VM to deploy, we will create a log analytics workspace.
 
-<h2>Create log analytics workspace</h2>  <br/>
+<h2>Create log analytics workspace and connect it to our VM</h2>  <br/>
+
+We need to "ingest" logs from the VM (IE the windows event logs), so we will set up a workspace to do that. Later we will create our own custom log that contains geographical workspace. We will create the logs so our SIEM can connect to them and display the geodata on the map.
+
+Now, in the searchbar look type "log analytics" and select log analytics workspace.
+
+![6 make logs](https://github.com/TChungSEC/Azure_Sentinel_VM_SIEM_Map/assets/164605938/cd64b40f-7d20-4fbe-b06b-77a0244f9fbe)
+
+On this page select Create log analytics workspace.
+
+Here, we will select the resource group we created when we set up the VM. In my case, it is named Honeypotlab.
+
+You can name it whatever you would like. I named it law-HPL (short for log analytics workspace honeypot lab)
+
+Make sure to match the region your VM was created in.
+
+![7Create log rule](https://github.com/TChungSEC/Azure_Sentinel_VM_SIEM_Map/assets/164605938/bfd57481-634e-40e6-9550-bcc6e6b6d2e9)
+
+Select Reivew + Create, and then create.
+
+Next, we will go to Microsoft Defender to enable the ability to gather logs.
+
+Search "Defender for cloud" and select it from the services.
+
+![8go to security center (defender for cloud)](https://github.com/TChungSEC/Azure_Sentinel_VM_SIEM_Map/assets/164605938/a5552809-172b-43e0-b6b3-35591b44c37c)
+
+Then, Navigate to Environment Settings
+
+![9 pricing and setting (now Environment settings)](https://github.com/TChungSEC/Azure_Sentinel_VM_SIEM_Map/assets/164605938/edda17fe-ab18-4ee0-9cf4-386d3bef9aa5)
+
+Here, select your log analytics workspace.
+
+![10 Click log analytic workspace](https://github.com/TChungSEC/Azure_Sentinel_VM_SIEM_Map/assets/164605938/c4e32886-308e-45f6-8da4-93b50a4607ef)
+
+On this page, select enable all plans and save.
+
+![11 enable all](https://github.com/TChungSEC/Azure_Sentinel_VM_SIEM_Map/assets/164605938/0ae2c731-45f7-4af1-b423-cfa1546a26f6)
+
+In the Data Collections page, select "All Events" and save.
+
+![12 Log all events](https://github.com/TChungSEC/Azure_Sentinel_VM_SIEM_Map/assets/164605938/b7b65a7f-819a-48a0-8f8c-dc40773ec730)
+
+Now we're going to go back to our log analytics workspace and connect it to our VM.
+
+![13 log anayltics](https://github.com/TChungSEC/Azure_Sentinel_VM_SIEM_Map/assets/164605938/8fad4f0f-cf7b-4c0c-bdb5-a5c250da0cb0)
+
+Select our workspace on the Log analytics workspace page.
+
+![15 navigate to VM](https://github.com/TChungSEC/Azure_Sentinel_VM_SIEM_Map/assets/164605938/5a63ff25-15f9-4006-9ac2-e6c81fab5ab7)
+
+On the left, scroll down and find "Virtual Machines".
+
+![16 VM](https://github.com/TChungSEC/Azure_Sentinel_VM_SIEM_Map/assets/164605938/e52c4d63-25e0-44b3-8df6-6d98f2d50549)
+
+Select our VM and then on the next page select "Connect". This may take some time.
+
+![17 click connec](https://github.com/TChungSEC/Azure_Sentinel_VM_SIEM_Map/assets/164605938/69017009-9b82-4723-8993-97ed3d32a5d5)
+
+
+<h2>Setting up our SIEM (Sentinel)</h2>  <br/>
+
+In the search bar search for "Sentinel" and select Microsoft Sentinel.
+
+![18 add sentinel](https://github.com/TChungSEC/Azure_Sentinel_VM_SIEM_Map/assets/164605938/7b5435cf-d8ca-4c6f-9653-2a430b24b9a8)
+
+Select Create Microsoft Sentinel, and on the next page select our log analytics workspace and click "Add". After a moment, it should add our workspace to Sentinel.
+
+![19 added to MS sentinetl](https://github.com/TChungSEC/Azure_Sentinel_VM_SIEM_Map/assets/164605938/ebc6d65f-7d02-424d-81d4-4bba2e41eb77)
+
+<h2>Configuring our VM via RDP</h2>  <br/>
+
+Now we'll log into our VM via RDP to make sure everything is running and configured correctly. If your VM is done deploying, search for "Virtual machine" in the search tab and select the option. 
+
+On the VM page, we should see our public IP address.
+
+![20 copy ip to connect to RDP](https://github.com/TChungSEC/Azure_Sentinel_VM_SIEM_Map/assets/164605938/c180d837-a25b-4cc8-b3a8-c89c5075056d)
+
+Copy it, and search for RDP in the Windows start menu on your PC.
+
+Open RDP, and paste the IP address you copied. Now remember the credentials you used when you created the VM, and use them to log in.
+
+![21 login to RDP](https://github.com/TChungSEC/Azure_Sentinel_VM_SIEM_Map/assets/164605938/ba4a3d93-0064-4ee2-9cac-110d86ded144)
+
+Now, we'll see if we can ping our machine. 
+
+In the Windows start menu (on our own machine) search for cmd, and open it.
+
+In the Command Prompt, we'll attempt to ping our VM.
+
+Type "ping (IP address here)" and see if you get a connection. 
+
+![21 ping machine](https://github.com/TChungSEC/Azure_Sentinel_VM_SIEM_Map/assets/164605938/d019eded-32a0-4cd0-9a44-c3ed9bab04eb)
+
+It should time out. 
+
+![22 timeout because firewall](https://github.com/TChungSEC/Azure_Sentinel_VM_SIEM_Map/assets/164605938/a9dde464-3922-45a3-8bfc-b3b5c6a72afc)
+
+The reason it's timing out is because of our VM firewall settings. We are going to turn it off.
+
+In our VM, under the start menu search for wf.msc (windows firewall)
+
+Once the firewall menu is open, select Windows Defender Firewall Properties.
+
+![23 firewall config](https://github.com/TChungSEC/Azure_Sentinel_VM_SIEM_Map/assets/164605938/b453130c-0115-425a-9a05-7d6b37be37c4)
+
+Under the "Domain", "Private", and "Public" tabs turn off the firewall. 
+
+![24 go to all tabs and turn firewall OFF](https://github.com/TChungSEC/Azure_Sentinel_VM_SIEM_Map/assets/164605938/64230fdc-a6ea-4756-a5df-e6e3e098aa88)
+
+
+<h2>Download powershell script/h2>  <br/>
+
+Now, still in our VM, open your internet browser and navigate to: https://github.com/joshmadakor1/Sentinel-Lab/blob/main/Custom_Security_Log_Exporter.ps1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
