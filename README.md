@@ -212,7 +212,6 @@ Now, save your Powershell script to the desktop and name it whatever you'd like.
 
 ![31 save file](https://github.com/TChungSEC/Azure_Sentinel_VM_SIEM_Map/assets/164605938/56d7a723-9653-462f-b7f9-2586900d61a8)
 
-
 <h2>Create a custom log in Log Analytics Workspace</h2>  <br/>
 
 The script is good to go, but we need to "train" analytics workspace to identify the data and process it. We will create a custom log inside of our Log Analytics Workspace that will allow us to bring the geodata into our workspace.
@@ -248,83 +247,55 @@ Now in the collection path tab, we need to select where log resides in the VM. I
 Under "Details" you can name the custom log whatever you'd like. Select "Next", then "Create" at the bottom. It might take a moment for the Log Analytics Workspace and Sentinel to "sync". Just wait.
 
 <h2>Create a new workbook in Sentinel</h2>  <br/>
-
 We are now at the final step. Congratulations for making it this far! 
 
+What we need to do now, is create a workbook in Sentinel to show us the geodata of the failed logins on a map.
+
+To do this, navigate to Sentinel and on the lefthand side select "Workbooks".
+
+On this page select "+ Add Workbook".
+
+![38 add workbook](https://github.com/TChungSEC/Azure_Sentinel_VM_SIEM_Map/assets/164605938/6f97d954-bb3e-4141-a297-78b523b1625b)
+
+On the "New Workbook" page, select "Edit". You can delete the existing widgets or keep them. I've kept them.
+
+Still on this page, at the bottom select "Add" and from the dropdown menu select "Add Query".
+
+![39add query](https://github.com/TChungSEC/Azure_Sentinel_VM_SIEM_Map/assets/164605938/c00c9a68-f43a-4e4d-bf1c-bde7858cc602)
+
+Copy and paste this query into the space. 
+
+   failed_rdplog_CL
+ |extend username = extract(@"username:([^,]+)", 1, RawData),
+         timestamp = extract(@"timestamp:([^,]+)", 1, RawData),
+         latitude = extract(@"latitude:([^,]+)", 1, RawData),
+         longitude = extract(@"longitude:([^,]+)", 1, RawData),
+         sourcehost = extract(@"sourcehost:([^,]+)", 1, RawData),
+         state = extract(@"state:([^,]+)", 1, RawData),
+         label = extract(@"label:([^,]+)", 1, RawData),
+         destination = extract(@"destinationhost:([^,]+)", 1, RawData),
+         country = extract(@"country:([^,]+)", 1, RawData)
+ |where destination != "samplehost"
+ |where sourcehost != ""
+ |summarize event_count=count() by timestamp, label, country, state, sourcehost, username, destination, longitude, latitude
+
+Also, under the visualization dropdown make sure to select "Map". You can set the map size to anything you'd like. I prefer "Full".
+
+![40 map](https://github.com/TChungSEC/Azure_Sentinel_VM_SIEM_Map/assets/164605938/2ca95b2b-244a-4929-bda1-c95246639b81)
+
+Now you can run the query to make sure it works, (the map should show up) and save it. Name it anything you'd like.
+
+Now, anytime you navigate to your workbook space you can see the map and failed logins and where they originated from.
+
+*NOTE* For logs to be collected the script MUST be running, if it's not running there will be no new data displayed on your map.
+
+After a few days of running my 1000 API requests, my map looked like this:
+
+![45 WORLD MAPPU](https://github.com/TChungSEC/Azure_Sentinel_VM_SIEM_Map/assets/164605938/9a17dcc4-e99c-42cf-a268-c7b36d06328d)
 
 
+Congratulations, you have completed this lab! You have set up a VM in Azure, opened it up to all traffic, and configured custom logs and analytics to view their geodata in Sentinel. 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<br />
-<br />
-Enter the number of passes: <br/>
-<img src="https://i.imgur.com/nCIbXbg.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-<br />
-<br />
-Confirm your selection:  <br/>
-<img src="https://i.imgur.com/cdFHBiU.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-<br />
-<br />
-Wait for process to complete (may take some time):  <br/>
-<img src="https://i.imgur.com/JL945Ga.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-<br />
-<br />
-Sanitization complete:  <br/>
-<img src="https://i.imgur.com/K71yaM2.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-<br />
-<br />
-Observe the wiped disk:  <br/>
-<img src="https://i.imgur.com/AeZkvFQ.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-</p>
 
 <!--
  ```diff
