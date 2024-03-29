@@ -15,7 +15,7 @@ Note that you must have an MS Azure account to complete this lab. You can sign u
 
 https://azure.microsoft.com/en-us/pricing/offers/ms-azr-0044p
 
-<h2>Create a VM honeypot in Azure</h2>  <br/>
+<h2>Create a VM honeypot in Azure</h2> 
 In Azure, search for VM.
   Select VM in the services drop down menu.
   
@@ -128,8 +128,7 @@ Select our VM and then on the next page select "Connect". This may take some tim
 ![17 click connec](https://github.com/TChungSEC/Azure_Sentinel_VM_SIEM_Map/assets/164605938/69017009-9b82-4723-8993-97ed3d32a5d5)
 
 
-<h2>Setting up our SIEM (Sentinel)</h2>  <br/>
-
+<h2>Setting up our SIEM (Sentinel)</h2> 
 In the search bar search for "Sentinel" and select Microsoft Sentinel.
 
 ![18 add sentinel](https://github.com/TChungSEC/Azure_Sentinel_VM_SIEM_Map/assets/164605938/7b5435cf-d8ca-4c6f-9653-2a430b24b9a8)
@@ -179,8 +178,7 @@ Under the "Domain", "Private", and "Public" tabs turn off the firewall.
 ![24 go to all tabs and turn firewall OFF](https://github.com/TChungSEC/Azure_Sentinel_VM_SIEM_Map/assets/164605938/64230fdc-a6ea-4756-a5df-e6e3e098aa88)
 
 
-<h2>Download powershell script</h2>  <br/>
-
+<h2>Download powershell script</h2>
 We need to be running a powershell script on our VM to actually log the geodata of the threat actors attempting to log into our VM.
 
 What this script does essentially is it looks through our event logs, and notes the failed login attempts and their IPs. In conjunction with and API key from IPgeolocation.io, it maps the IP to a phsyical location.
@@ -243,7 +241,7 @@ Now in the collection path tab, we need to select where log resides in the VM. I
 
 Under "Details" you can name the custom log whatever you'd like. Select "Next", then "Create" at the bottom. It might take a moment for the Log Analytics Workspace and Sentinel to "sync". Just wait.
 
-<h2>Create a new workbook in Sentinel</h2>  <br/>
+<h2>Create a new workbook in Sentinel</h2>
 We are now at the final step. Congratulations for making it this far! 
 
 What we need to do now, is create a workbook in Sentinel to show us the geodata of the failed logins on a map.
