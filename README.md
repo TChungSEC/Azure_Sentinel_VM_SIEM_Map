@@ -15,9 +15,6 @@ Note that you must have an MS Azure account to complete this lab. You can sign u
 
 https://azure.microsoft.com/en-us/pricing/offers/ms-azr-0044p
 
-<p align="center">
-<br />
-<br />
 <h2>Create a VM honeypot in Azure</h2>  <br/>
 In Azure, search for VM.
   Select VM in the services drop down menu.
@@ -98,7 +95,7 @@ Search "Defender for cloud" and select it from the services.
 
 ![8go to security center (defender for cloud)](https://github.com/TChungSEC/Azure_Sentinel_VM_SIEM_Map/assets/164605938/a5552809-172b-43e0-b6b3-35591b44c37c)
 
-Then, Navigate to Environment Settings
+Then, Navigate to Environment Settings.
 
 ![9 pricing and setting (now Environment settings)](https://github.com/TChungSEC/Azure_Sentinel_VM_SIEM_Map/assets/164605938/edda17fe-ab18-4ee0-9cf4-386d3bef9aa5)
 
@@ -171,7 +168,7 @@ It should time out.
 
 The reason it's timing out is because of our VM firewall settings. We are going to turn it off.
 
-In our VM, under the start menu search for wf.msc (windows firewall)
+In our VM, under the start menu search for wf.msc (windows firewall).
 
 Once the firewall menu is open, select Windows Defender Firewall Properties.
 
